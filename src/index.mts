@@ -22,18 +22,38 @@ app.get("/ping", (_, res) => {
 });
 
 app.get("/todos", (req, res) => {
-  const { q } = req.query;
+  const { q, sort } = req.query;
 
   try {
-    if (q) {
-      const filtreredTodos = todos.filter(
-        (t) => t.text.indexOf(q.toString()) >= 0,
-      );
+    let filtreredTodos = todos;
 
-      res.status(200).json(filtreredTodos);
-    } else {
-      res.status(200).json(todos);
+    if (q) {
+      filtreredTodos = todos.filter((t) => t.text.indexOf(q.toString()) >= 0);
     }
+    if (sort) {
+      if (sort === "asc") {
+        filtreredTodos.sort((a, b) => {
+          const todo1 = a.text.toLowerCase();
+          const todo2 = b.text.toLowerCase();
+
+          if (todo1 > todo2) return 1;
+          if (todo1 < todo2) return -1;
+          return 0;
+        });
+      }
+      if (sort === "desc") {
+        filtreredTodos.sort((a, b) => {
+          const todo1 = a.text.toLowerCase();
+          const todo2 = b.text.toLowerCase();
+
+          if (todo1 > todo2) return -1;
+          if (todo1 < todo2) return 1;
+          return 0;
+        });
+      }
+    }
+
+    res.status(200).json(filtreredTodos);
   } catch (error) {
     res.status(500).send(error);
   }
