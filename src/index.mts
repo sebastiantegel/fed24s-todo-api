@@ -28,7 +28,9 @@ app.get("/todos", (req, res) => {
     let filtreredTodos = todos;
 
     if (q) {
-      filtreredTodos = todos.filter((t) => t.text.indexOf(q.toString()) >= 0);
+      filtreredTodos = todos.filter(
+        (t) => t.text.toLowerCase().indexOf(q.toString()) >= 0,
+      );
     }
     if (sort) {
       if (sort === "asc") {
